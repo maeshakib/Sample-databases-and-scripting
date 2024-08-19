@@ -276,3 +276,78 @@ FROM
 ORDER BY 
     hierarchy_level, manager_id, employee_id;
  ```
+#### Retrieve the top 2 highest-paid employees for each department, sorted by salary in descending order.
+```sql
+WITH RankedEmployees AS (
+  SELECT
+    employee_id,
+    department_id,
+    salary,
+    ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) AS rank
+  FROM employees
+)
+
+SELECT
+  employee_id,
+  department_id,
+  salary
+FROM RankedEmployees
+WHERE rank <= 2
+ORDER BY department_id, rank;
+```
+####  Query to Find Employees Who Do Not Have Any Dependents:
+```sql
+SELECT e.employee_id, e.first_name, e.last_name
+FROM employees e
+LEFT JOIN dependents d ON e.employee_id = d.employee_id
+WHERE d.dependent_id IS NULL;
+ ```
+
+####  Query to Get the Average Salary by Job Title:
+```sql 
+SELECT j.job_title, AVG(e.salary) AS average_salary
+FROM employees e
+JOIN jobs j ON e.job_id = j.job_id
+GROUP BY j.job_title
+ORDER BY average_salary DESC;
+```
+#### Query to Find the Top 3 Highest Salaries in the Company:
+
+```sql
+SELECT DISTINCT top 3 salary
+FROM employees
+ORDER BY salary DESC
+ ```
+ 
+
+#### Query to Find Employees Who Work in the Same Location as Their Manager:
+
+```sql
+SELECT e.employee_id, e.first_name, e.last_name, d.department_name
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+JOIN locations l ON d.location_id = l.location_id
+JOIN employees m ON e.manager_id = m.employee_id AND e.department_id = m.department_id
+WHERE e.department_id = m.department_id
+ORDER BY e.employee_id;
+```
+#### Query to Find Employees Working in Departments Located in a Specific Country (e.g., "United States"):
+```sql
+SELECT e.employee_id, e.first_name, e.last_name, d.department_name, c.country_name
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+JOIN locations l ON d.location_id = l.location_id
+JOIN countries c ON l.country_id = c.country_id
+WHERE c.country_name = 'United States';
+```
+#### Query to List All Jobs with the Number of Employees in Each Job Title:
+
+```sql
+SELECT j.job_title, COUNT(e.employee_id) AS num_employees
+FROM jobs j
+LEFT JOIN employees e ON j.job_id = e.job_id
+GROUP BY j.job_title
+ORDER BY num_employees DESC;
+```
+ 
+ 
