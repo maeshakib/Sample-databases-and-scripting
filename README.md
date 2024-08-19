@@ -78,10 +78,38 @@ SELECT [employee_id]
       ,[phone_number]
       ,[hire_date]
       ,e.[job_id]
-      ,[salary]
+      ,[salary] 
       ,[manager_id]
       ,[department_id], j.job_title
   FROM [HR].[dbo].[employees] e join [HR].[dbo].[jobs] j on e.job_id=j.job_id
 
   where j.job_title in('Programmer','Finance Manager')
+
+
+--write a SQL query to find the departments where any manager manages four or more employees. Return department_id.
+SELECT DISTINCT department_id
+ FROM employees
+ GROUP BY department_id, manager_id 
+ HAVING COUNT(employee_id) >= 4;
+
+--write a SQL query to compute the average salary of each job ID. Exclude those records where average salary is on or lower than 8000. Return job ID, average salary.
+SELECT job_id, AVG(salary) 
+ FROM employees 
+ GROUP BY job_id 
+ HAVING AVG(salary) > 8000;
+
+
+--write a SQL query to find those job titles where maximum salary falls between 12000 and 18000 (Begin and end values are included.).  
+SELECT job_title, max_salary - min_salary AS salary_differences 
+ FROM jobs 
+ WHERE max_salary BETWEEN 12000 AND 18000;
+ 
+ --write a SQL query to find those employees who receive a higher salary than the employee with ID 163. Return first name, last name.
+ SELECT first_name+' '+last_name,salary 
+ FROM employees 
+ WHERE salary > 
+     ( SELECT salary   FROM employees  WHERE employee_id = 107
+    );
+
+
  
