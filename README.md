@@ -111,5 +111,70 @@ SELECT job_title, max_salary - min_salary AS salary_differences
      ( SELECT salary   FROM employees  WHERE employee_id = 107
     );
 
+--write a SQL query to find those employees who earn more than the average salary
+SELECT employee_id, first_name, last_name  
+ FROM employees  
 
+ WHERE salary >  
+( SELECT AVG(salary)     FROM employees 
+);
+
+--write a SQL query to find those employees who report to that manager whose first name is ‘Lex’
+SELECT first_name, last_name, employee_id, salary   FROM employees  
+ WHERE manager_id = 
+(SELECT employee_id    FROM employees    WHERE first_name = 'Lex' 
+);
+
+--Display the first name and join date of the employees who joined between 1998 and 2000.
+SELECT FIRST_NAME, HIRE_DATE FROM EMPLOYEES 
+WHERE year(HIRE_DATE) BETWEEN 1998 AND 2000 ORDER BY HIRE_DATE
+
+--Display the departments into which no employee joined in last two years.
+SELECT * 
+FROM DEPARTMENTS 
+WHERE DEPARTMENT_ID NOT IN 
+    (SELECT DISTINCT DEPARTMENT_ID 
+     FROM EMPLOYEES 
+     WHERE DATEDIFF(YEAR, HIRE_DATE, GETDATE()) < 2);
+
+
+--Display the details of departments in which the max salary is greater than 10000 for employees  
+SELECT * FROM DEPARTMENTS
+WHERE DEPARTMENT_ID IN 
+(SELECT DEPARTMENT_ID FROM EMPLOYEES 
+  
+ GROUP BY DEPARTMENT_ID
+ HAVING MAX(SALARY) >10000)
+
+
+--Display the details of employees drawing the highest salary in the department.
+SELECT e.* FROM employees e
+JOIN (
+    SELECT department_id, MAX(salary) AS max_salary     FROM employees     GROUP BY department_id
+) max_salaries
+ON e.department_id = max_salaries.department_id AND e.salary = max_salaries.max_salary;
+
+
+-- Display third highest salary of all employees
+
+--With Common Table Expression (CTE) to find the third-highest salary with the following query:
+
+WITH RankedSalaries AS (
+    SELECT salary, 
+           DENSE_RANK() OVER (ORDER BY salary DESC) AS rank
+    FROM employees
+)
+SELECT salary
+FROM RankedSalaries
+WHERE rank = 3;
+
+--with sub query
+SELECT salary
+FROM employees
+WHERE salary = (
+    SELECT DISTINCT salary 
+    FROM employees 
+    ORDER BY salary DESC 
+    OFFSET 2 ROWS FETCH NEXT 1 ROW ONLY
+);
  
