@@ -33,3 +33,26 @@ The HR sample database has seven tables:
   WHERE salary BETWEEN 8000 AND 12000 
         OR  department_id NOT IN (40 , 120 , 70)
           AND   hire_date < '2003-06-05'
+
+
+--write a SQL query to find those employees whose salaries are not between 7000 and 15000 . Sort the result-set in ascending order by the full name (first and last). Return full name and salary.
+ SELECT first_name +' ' + last_name AS Name, salary
+ FROM employees
+ WHERE salary NOT BETWEEN 7000 AND 15000
+ ORDER BY first_name+ ' ' + last_name;
+
+
+  --write a SQL query to find those employees who were hired between November 5th, 1994 and July 5th, 1998. 
+ SELECT first_name +' ' +last_name AS Full_Name, job_id, hire_date
+ FROM employees 
+ WHERE hire_date BETWEEN '1994-11-05' AND '1998-07-05';
+
+  --write a SQL query to find those employees who work under a manager
+ SELECT first_name+ ' ' + last_name AS Full_Name, salary, manager_id
+ FROM employees
+ WHERE manager_id IS NOT NULL;
+
+  --write a SQL query to find those employees whose first name contains a character 's' in the third position.
+ SELECT first_name, last_name, department_id
+ FROM employees
+ WHERE first_name LIKE '__s%';
