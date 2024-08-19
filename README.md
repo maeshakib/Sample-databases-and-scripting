@@ -488,4 +488,27 @@ JOIN regions r ON c.region_id = r.region_id
 GROUP BY r.region_name, c.country_name
 ORDER BY r.region_name, c.country_name;
  ```
+ #### Pivoting to Show Employee Count by Hire Year and Department:
+
+  SELECT *
+FROM (
+    SELECT 
+        YEAR(e.hire_date) AS hire_year, 
+        d.department_name, 
+        COUNT(e.employee_id) AS num_employees
+    FROM 
+        employees e
+    JOIN 
+        departments d ON e.department_id = d.department_id
+    GROUP BY 
+        YEAR(e.hire_date), d.department_name
+) AS SourceTable
+PIVOT (
+    SUM(num_employees)
+    FOR hire_year IN ([1987], [1988], [1989], [1990],  [1991], [1992] ,[1993], [1994], [1995], [1996], [1997],[1998], [1999], [2000])
+) AS PivotTable
+ORDER BY department_name;
+
+
+ ```
  
