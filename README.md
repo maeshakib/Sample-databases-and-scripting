@@ -56,3 +56,32 @@ The HR sample database has seven tables:
  SELECT first_name, last_name, department_id
  FROM employees
  WHERE first_name LIKE '__s%';
+
+
+--write a SQL query to count the number of employees, 
+--the sum of all salary, and 
+--difference between the highest salary and lowest salaries by each job id. 
+
+SELECT job_id, COUNT(*) [# of employees], SUM(salary) [Total Salary], MAX(salary) - MIN(salary) AS salary_difference
+ FROM employees
+ GROUP BY job_id;
+
+ --write a SQL query to count the number of employees worked under each manager
+ SELECT manager_id, COUNT(*) [Total Emp]
+ FROM employees
+ GROUP BY manager_id;
+
+--write a SQL query to find all those employees who are either Programmer or Finance Manager
+SELECT [employee_id]
+      ,[first_name] +' '+       [last_name]
+      ,[email]
+      ,[phone_number]
+      ,[hire_date]
+      ,e.[job_id]
+      ,[salary]
+      ,[manager_id]
+      ,[department_id], j.job_title
+  FROM [HR].[dbo].[employees] e join [HR].[dbo].[jobs] j on e.job_id=j.job_id
+
+  where j.job_title in('Programmer','Finance Manager')
+ 
