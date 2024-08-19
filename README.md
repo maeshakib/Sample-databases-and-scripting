@@ -489,9 +489,8 @@ GROUP BY r.region_name, c.country_name
 ORDER BY r.region_name, c.country_name;
  ```
  #### Pivoting to Show Employee Count by Hire Year and Department:
-
-  SELECT *
-FROM (
+ ```sql
+  SELECT * FROM (
     SELECT 
         YEAR(e.hire_date) AS hire_year, 
         d.department_name, 
@@ -508,7 +507,5 @@ PIVOT (
     FOR hire_year IN ([1987], [1988], [1989], [1990],  [1991], [1992] ,[1993], [1994], [1995], [1996], [1997],[1998], [1999], [2000])
 ) AS PivotTable
 ORDER BY department_name;
-
-
- ```
+```
  
