@@ -349,5 +349,143 @@ LEFT JOIN employees e ON j.job_id = e.job_id
 GROUP BY j.job_title
 ORDER BY num_employees DESC;
 ```
+ #### Query to Get the Total Number of Employees, Grouped by Country:
+
  
+
+SELECT c.country_name, COUNT(e.employee_id) AS total_employees
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+JOIN locations l ON d.location_id = l.location_id
+JOIN countries c ON l.country_id = c.country_id
+GROUP BY c.country_name
+ORDER BY total_employees DESC;
+ ```
+#### Query to Get the Average, Minimum, and Maximum Salary by Department:
+
+ 
+SELECT d.department_name, 
+       AVG(e.salary) AS average_salary, 
+       MIN(e.salary) AS minimum_salary, 
+       MAX(e.salary) AS maximum_salary
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+GROUP BY d.department_name
+ORDER BY d.department_name;
+ ```
+#### Query to List Employees with Salaries Above the Department Average:
+
+ 
+
+SELECT e.employee_id, e.first_name, e.last_name, e.salary, d.department_name
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+WHERE e.salary > (
+    SELECT AVG(e2.salary)
+    FROM employees e2
+    WHERE e2.department_id = e.department_id
+)
+ORDER BY e.salary DESC;
+ ```
+#### Query to Get the Number of Employees Hired Each Year:
+
+ ```sql
+
+SELECT YEAR(hire_date) AS hire_year, COUNT(employee_id) AS num_employees
+FROM employees
+GROUP BY YEAR(hire_date)
+ORDER BY hire_year;
+ ```
+#### Query to Identify Departments with No Employees:
+
+ ```sql
+
+SELECT d.department_name
+FROM departments d
+LEFT JOIN employees e ON d.department_id = e.department_id
+WHERE e.employee_id IS NULL;
+ ```
+#### Query to Find the Manager with the Most Direct Reports:
+
+ ```sql
+
+SELECT m.employee_id, m.first_name, m.last_name, COUNT(e.employee_id) AS num_reports
+FROM employees m
+JOIN employees e ON m.employee_id = e.manager_id
+GROUP BY m.employee_id, m.first_name, m.last_name
+ORDER BY num_reports DESC;
+ ```
+#### Query to Get the Distribution of Employees by Job Title and Department:
+
+ ```sql
+
+SELECT j.job_title, d.department_name, COUNT(e.employee_id) AS num_employees
+FROM employees e
+JOIN jobs j ON e.job_id = j.job_id
+JOIN departments d ON e.department_id = d.department_id
+GROUP BY j.job_title, d.department_name
+ORDER BY d.department_name, j.job_title;
+ ```
+#### Query to List Employees Who Have Been with the Company for More Than 30 Years:
+
+ ```sql
+
+SELECT e.employee_id, e.first_name, e.last_name, e.hire_date, DATEDIFF(YEAR, e.hire_date, GETDATE()) AS years_with_company
+FROM employees e
+WHERE DATEDIFF(YEAR, e.hire_date, GETDATE()) > 30
+ORDER BY years_with_company DESC;
+ ```
+#### Query to Find Departments with an Average Salary Greater Than a Specified Amount (e.g., $70,000):
+
+ ```sql
+
+SELECT d.department_name, AVG(e.salary) AS average_salary
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+GROUP BY d.department_name
+HAVING AVG(e.salary) > 70000
+ORDER BY average_salary DESC;
+ ```
+#### Query to Identify the Employee(s) with the Longest Tenure:
+
+ ```sql
+
+SELECT top 1 e.employee_id, e.first_name, e.last_name, e.hire_date, DATEDIFF(DAY, e.hire_date, GETDATE()) AS days_with_company
+FROM employees e
+ORDER BY days_with_company DESC
+ 
+ ```
+#### Query to Calculate the Total Compensation (Salary) Paid Out by Department:
+
+ ```sql
+
+SELECT d.department_name, SUM(e.salary) AS total_compensation
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+GROUP BY d.department_name
+ORDER BY total_compensation DESC;
+ ```
+#### Query to Get the List of Employees Who Share the Same Job Title as Their Manager:
+
+ ```sql
+
+SELECT e.employee_id, e.first_name, e.last_name, e.job_id, j.job_title
+FROM employees e
+JOIN employees m ON e.manager_id = m.employee_id
+JOIN jobs j ON e.job_id = j.job_id
+WHERE e.job_id = m.job_id
+ORDER BY e.job_id;
+ ```
+#### Query to Generate a Report of Employees by Region:
+
+ ```sql
+SELECT r.region_name, c.country_name, COUNT(e.employee_id) AS num_employees
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+JOIN locations l ON d.location_id = l.location_id
+JOIN countries c ON l.country_id = c.country_id
+JOIN regions r ON c.region_id = r.region_id
+GROUP BY r.region_name, c.country_name
+ORDER BY r.region_name, c.country_name;
+ ```
  
